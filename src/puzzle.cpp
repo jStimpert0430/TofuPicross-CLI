@@ -20,19 +20,19 @@ using namespace std;
 			return puzzleMap[y][x]; 
 		}
 
-		void Puzzle::PrintBoard(int cursorX, int cursorY){
+		void Puzzle::PrintBoard(int cursorX, int cursorY, string message){
 			system("clear");
 			queue<queue<int>> rowKeyQueue = CalcRowKeys();
 			vector<queue<int>> columnKeyQueue = CalcColumnKeys();
 			PrintHeader();
 			PrintTopRowCoords();
-			for(int i = 0; i < sizeof(gameBoard[0]); i++){
+			for(int i = 0; i < (int)size(gameBoard[0]); i++){
 				PrintLeadingKey(rowKeyQueue, i, cursorY);
 				cout << redNumber;
 				PrintGameBoardRow(i, cursorX, cursorY);
 			}
 			PrintBottomKeys(columnKeyQueue, cursorX);
-			PrintFooter();
+			PrintFooter(message);
 		};
 
 		void Puzzle::PrintHeader(){
@@ -73,7 +73,7 @@ using namespace std;
 		}
 
 		void Puzzle::PrintGameBoardRow(int selectedRow, int cursorX, int cursorY){
-			for(int i = 0; i < sizeof(gameBoard[selectedRow]); i++){
+			for(int i = 0; i < (int)size(gameBoard[selectedRow]); i++){
 				//Color cursor space red
 				if(selectedRow == cursorY && i == cursorX){
 					if( gameBoard[selectedRow][i] == true){
@@ -119,19 +119,47 @@ using namespace std;
 			}
 		}
 
-		void Puzzle::PrintFooter(){
-			int margin = 25;
-			cout << "\n\n\n"; 
-			cout << setw((margin)) << "";
-			cout << "MISTAKES: 99\n\n";
+		void Puzzle::PrintFooter(string message){
+			int margin = 27;
+			cout << "\n\n";
+			if(message != ""){ 
+				if(message.length() > 10){
+				cout << setw((margin) - (message.length()/4)) << "";
+            	cout << message << "\n";
+				}
+				else{
+					cout << setw((margin)) << "";
+					cout << message << "\n";
+				}
+			}
+			else{}
+            cout << setw((margin)) << "";
+			cout << "MISSES: " << getCurrentMistakes() << "/" << getMaxMistakes() << "\n\n";
+		}
+
+		int Puzzle::getCurrentMistakes(){
+			return currentMistakes;
+		}
+
+		int Puzzle::getMaxMistakes(){
+			return MAX_MISTAKES;
+		}
+
+		void Puzzle::addToCurrentMistakes(int value){
+			currentMistakes += value;
+		}
+
+		void Puzzle::resetGameBoard(){
+			std::fill(std::begin(gameBoard[0]), std::end(gameBoard[10]), false);
+			currentMistakes = 0;
 		}
 
 		queue<queue<int>> Puzzle::CalcRowKeys(){
 			queue<queue<int>> rowKeyQueue;
-			for(int i = 0; i < sizeof(puzzleMap[0]); i++){
+			for(int i = 0; i < (int)size(puzzleMap[0]); i++){
 				int consecutiveCount = 0;
 				queue<int> puzzleKeyQueue;
-				for(int j = 0; j < sizeof(puzzleMap[0]); j++){
+				for(int j = 0; j < (int)size(puzzleMap[0]); j++){
 					if(puzzleMap[i][j]){
 						consecutiveCount++;
 					}
@@ -155,10 +183,10 @@ using namespace std;
 
 		vector<queue<int>> Puzzle::CalcColumnKeys(){
 			vector<queue<int>> columnKeyQueue;
-			for(int i = 0; i < sizeof(puzzleMap[0]); i++){
+			for(int i = 0; i < (int)size(puzzleMap[0]); i++){
 				int consecutiveCount = 0;
 				queue<int> puzzleKeyQueue;
-				for(int j = 0; j < sizeof(puzzleMap[0]); j++){
+				for(int j = 0; j < (int)size(puzzleMap[0]); j++){
 					if(puzzleMap[j][i]){
 						consecutiveCount++;
 					}

@@ -3,32 +3,36 @@
 #include "puzzle.h"
 #include "picrossController.h"
 
-	void picrossController::GetCommand(Puzzle &currentPuzzle){
+	std::string picrossController::GetCommand(Puzzle &currentPuzzle){
 		char input;
+		std::cin.get();
 		std::cout <<"Current POS: X-" <<cursorPos.first <<" Y-"<<cursorPos.second << std::endl <<  "Enter Command:\n[(R)eveal Space, (C)over space, (M)ark space, (D)elete mark, (Q)uit] \n-> ";
-		// cases - > needs to be an int, needs to not be more than x size, needs to not be less than x min
 		std::cin.get(input);
 		switch(tolower(input)){
 			case 'u':
 				MoveCursor(0, -1);
-				break;
+				return "   Moved Up";
 			case 'd':
 				MoveCursor(0, 1);
-				break;
+				return "   Moved Down";
 			case 'l':
 				MoveCursor(-1, 0);
-				break;
+				return "   Moved Left";
 			case 'r':
 				MoveCursor(1, 0);
-				break;
+                return "   Moved Right";
 			case 'm':
 				if(currentPuzzle.GetPuzzleMapVal(cursorPos.first, cursorPos.second) == true){
 					MarkPuzzle(cursorPos.first, cursorPos.second, currentPuzzle);
+                    return "Correct Guess - Marking Spot";
 				}
 				else{
+					currentPuzzle.addToCurrentMistakes(1);
+                    return "Incorrect Guess -- Adding Miss";
 					// No match, so it must be a miss -- increment miss counter, check for limit and continue or end game depending.
 				}
-				break;
+			default: 
+				return "Error: Not a supported command";
 		}
 	};
 
@@ -40,8 +44,9 @@
 		return cursorPos.second;
 	}
 
-	void picrossController::SetCursorPOS(){
-
+	void picrossController::SetCursorPOS(int newX, int newY){
+		cursorPos.first = newX;
+		cursorPos.second = newY;
 	}
 
 	void picrossController::MoveCursor(int x, int y){
