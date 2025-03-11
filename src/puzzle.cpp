@@ -1,12 +1,11 @@
 #include <iostream>
 #include <iomanip>
-#include <string>
-#include <queue>
-#include <vector>
 #include "puzzle.h"
 #define redNumber "\x1B[31m " + to_string((i)) + "\033[0m"
+#define grayNumber "\x1B[90m " + to_string((i)) + "\033[0m"
 #define filledSpaceChar " ■"
 #define emptySpaceChar " ◇"
+#define clearScr system("clear");
 using namespace std;
 
         Puzzle::Puzzle(){
@@ -14,6 +13,11 @@ using namespace std;
 
 		void Puzzle::SetGameBoard(int x, int y, bool val){
 			gameBoard[y][x] = val;
+			enumGameBoard[y][x] = eMapEntryType::FILLED;
+		}
+
+		bool Puzzle::GetGameBoardVal(int x, int y){
+			return gameBoard[y][x];
 		}
 
 		bool Puzzle::GetPuzzleMapVal(int x, int y){
@@ -21,14 +25,14 @@ using namespace std;
 		}
 
 		void Puzzle::PrintBoard(int cursorX, int cursorY, string message){
-			system("clear");
+			clearScr;
 			queue<queue<int>> rowKeyQueue = CalcRowKeys();
 			vector<queue<int>> columnKeyQueue = CalcColumnKeys();
 			PrintHeader();
 			PrintTopRowCoords();
-			for(int i = 0; i < (int)size(gameBoard[0]); i++){
+			for(int i = 0; i < (int)size(enumGameBoard[0]); i++){
 				PrintLeadingKey(rowKeyQueue, i, cursorY);
-				cout << redNumber;
+				cout << grayNumber;
 				PrintGameBoardRow(i, cursorX, cursorY);
 			}
 			PrintBottomKeys(columnKeyQueue, cursorX);
@@ -47,7 +51,7 @@ using namespace std;
 			cout << setw(margin) << right << "";
             cout << "  ";
 			for (int i = 0; i < SIZE; i++){
-				cout << redNumber;
+				cout << grayNumber;
 			}
 		}
 
@@ -76,7 +80,7 @@ using namespace std;
 			for(int i = 0; i < (int)size(gameBoard[selectedRow]); i++){
 				//Color cursor space red
 				if(selectedRow == cursorY && i == cursorX){
-					if( gameBoard[selectedRow][i] == true){
+					if( enumGameBoard[selectedRow][i] == eMapEntryType::FILLED){
 						cout<< "\x1B[31m" << filledSpaceChar << "\033[0m";
 					}
 					else{
@@ -84,7 +88,7 @@ using namespace std;
 					}
 				}
 				else{
-					if( gameBoard[selectedRow][i] == true){
+					if( enumGameBoard[selectedRow][i] == eMapEntryType::FILLED){
 						cout<< filledSpaceChar;
 					}
 					else{
@@ -143,6 +147,10 @@ using namespace std;
 
 		int Puzzle::getMaxMistakes(){
 			return MAX_MISTAKES;
+		}
+
+		int Puzzle::getSize(){
+			return SIZE;
 		}
 
 		void Puzzle::addToCurrentMistakes(int value){

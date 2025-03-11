@@ -3,6 +3,7 @@
 #include <string>
 #include "puzzle.h"
 #include "picrossController.h"
+#include "picrossEnums.h"
 
 //GAME CLASS - MANAGES GAME FLOW, PIECES, SCORE, AND TRACKS INFORMATION ABOUT THE CURRENT GAME
 class Game{
@@ -10,18 +11,10 @@ class Game{
 		int score;
 		std::string message = "";
 	public:
-		enum eGameState{
-			INITIALIZING,
-			ACTIVE,
-			GAMEOVER,
-			LEVELSELECT,
-			DIFFICULTYSELECT,
-			MESSAGESCREEN,
-			eGameState_MAX
-		};
         Game();
 		void initializeGame();
 		void GameLoop(Puzzle &currentPuzzle, picrossController &controller);
+		void ResetGame(Puzzle &currentPuzzle, picrossController &controller);
 };
 
 #endif

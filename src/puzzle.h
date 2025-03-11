@@ -3,6 +3,7 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include "picrossEnums.h"
 
 
 class Puzzle{
@@ -26,27 +27,12 @@ class Puzzle{
 		{false, true, true, true, true, true, true, true, true , false},
 		{false, false, true, true, true, true, true, true, true, false} };
 
-	public:
-		enum eMapEntryType{
-			EMPTY,
-			FILLED,
-			FLAGGED,
-			FLAGGEDFILLED,
-			WRONG,
-			eMapEntryType_MAX
-		};
+		enum eMapEntryType enumGameBoard[SIZE][SIZE] = {};
 
-		enum eDifficultyType{
-			EASY,
-			MEDIUM,
-			HARD,
-			MASTER,
-			GRANDMASTER,
-			FUNSIES,
-			eDifficultyType_MAX
-		};
+	public:
         Puzzle();
 		void SetGameBoard(int x, int y, bool val);
+		bool GetGameBoardVal(int x, int y);
 		bool GetPuzzleMapVal(int x, int y);
 		void PrintHeader();
 		void PrintTopRowCoords();
@@ -58,6 +44,7 @@ class Puzzle{
 		void addToCurrentMistakes(int value);
 		int getMaxMistakes();
 		int getCurrentMistakes();
+		int getSize();
 		void resetGameBoard();
 		std::queue<std::queue<int>> CalcRowKeys();
 		std::vector<std::queue<int>> CalcColumnKeys();

@@ -1,9 +1,6 @@
 #include <iostream>
-#include <string>
 #include <climits>
 #include "game.h"
-#include "puzzle.h"
-#include "picrossController.h"
 
 Game::Game(){
 	score = 0;
@@ -12,6 +9,7 @@ Game::Game(){
 void Game::initializeGame(){
 	Puzzle currentPuzzle;
 	picrossController controller;
+
 	GameLoop(currentPuzzle, controller);
 }
 
@@ -22,9 +20,13 @@ void Game::GameLoop(Puzzle &currentPuzzle, picrossController &controller){
 		if(currentPuzzle.getCurrentMistakes() >= currentPuzzle.getMaxMistakes()){
 			message = "Too many mistakes - Please try again";
 			std::cin.get();
-			currentPuzzle.resetGameBoard();
-			controller.SetCursorPOS(0, 0);
+			ResetGame(currentPuzzle, controller);
 		}
 	}
+}
+
+void Game::ResetGame(Puzzle &currentPuzzle, picrossController &controller){
+	currentPuzzle.resetGameBoard();
+	controller.SetCursorPOS(0, 0);
 }
 
