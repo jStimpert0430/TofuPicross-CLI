@@ -253,22 +253,27 @@ using namespace std;
 
 		queue<queue<int>> Puzzle::CalcRowKeysEnum(){
 			queue<queue<int>> rowKeyQueue;
-			for(int i = 0; i < (int)size(puzzleMap[0]); i++){
+			for(int i = 0; i < (int)size(enumGameBoard[0]); i++){
 				int consecutiveCount = 0;
+				int puzzleConsecutiveCount = 0;
 				queue<int> puzzleKeyQueue;
-				for(int j = 0; j < (int)size(puzzleMap[0]); j++){
-					if(enumGameBoard[i][j] == eMapEntryType::FILLED){
-						consecutiveCount++;
+				for(int j = 0; j < (int)size(enumGameBoard[0]); j++){
+					if(puzzleMap[i][j]){
+						puzzleConsecutiveCount++;
+						if(enumGameBoard[i][j] == eMapEntryType::FILLED){
+							consecutiveCount++;
+						}
 					}
 					else{
-						if(consecutiveCount != 0){
+						if(puzzleConsecutiveCount != 0){
 							puzzleKeyQueue.push(consecutiveCount);
 						}
 						consecutiveCount = 0;
+						puzzleConsecutiveCount = 0;
 					}
 				}
-				if(consecutiveCount != 0){
-					puzzleKeyQueue.push(consecutiveCount);
+				if(puzzleConsecutiveCount != 0){
+						puzzleKeyQueue.push(consecutiveCount);
 				}
 				if(puzzleKeyQueue.empty()){
 					puzzleKeyQueue.push(0);
