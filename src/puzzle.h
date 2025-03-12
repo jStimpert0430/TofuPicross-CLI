@@ -37,7 +37,7 @@ class Puzzle{
 		void PrintHeader();
 		void PrintTopRowCoords();
 		void PrintBoard(int cursorX, int cursorY, std::string message);
-		void PrintLeadingKey(std::queue<std::queue<int>> &keyQueue, int selectedRow, int cursorY);
+		void PrintLeadingKey(std::queue<std::queue<int>> &keyQueue, std::queue<std::queue<int>> &rowKeyQueueEnum, int selectedRow, int cursorY);
 		void PrintGameBoardRow(int selectedRow, int cursorX, int cursorY);
 		void PrintBottomKeys(std::vector<std::queue<int>> &keyQueue, int cursorX);
 		void PrintFooter(std::string message);
@@ -48,6 +48,8 @@ class Puzzle{
 		void resetGameBoard();
 		std::queue<std::queue<int>> CalcRowKeys();
 		std::vector<std::queue<int>> CalcColumnKeys();
+		std::queue<std::queue<int>> CalcRowKeysEnum();
+		std::vector<std::queue<int>> CalcColumnKeysEnum();
 };
 
 #endif

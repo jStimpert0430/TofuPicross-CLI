@@ -31,11 +31,13 @@ using namespace std;
 		void Puzzle::PrintBoard(int cursorX, int cursorY, string message){
 			clearScr;
 			queue<queue<int>> rowKeyQueue = CalcRowKeys();
+			queue<queue<int>> rowKeyQueueEnum = CalcRowKeysEnum();
 			vector<queue<int>> columnKeyQueue = CalcColumnKeys();
+			vector<queue<int>> columnKeyQueueEnum = CalcColumnKeysEnum();
 			PrintHeader();
 			PrintTopRowCoords();
 			for(int i = 0; i < (int)size(enumGameBoard[0]); i++){
-				PrintLeadingKey(rowKeyQueue, i, cursorY);
+				PrintLeadingKey(rowKeyQueue, rowKeyQueueEnum, i, cursorY);
 				cout << grayNumber;
 				PrintGameBoardRow(i, cursorX, cursorY);
 			}
@@ -59,7 +61,7 @@ using namespace std;
 			}
 		}
 
-		void Puzzle::PrintLeadingKey(queue<queue<int>> &keyQueue, int selectedRow, int cursorY){
+		void Puzzle::PrintLeadingKey(queue<queue<int>> &keyQueue,queue<queue<int>> &rowKeyQueueEnum, int selectedRow, int cursorY){
 				int margin = 20;
                 cout << "\n";
                 string rowKeyString;
@@ -68,18 +70,30 @@ using namespace std;
 					while(!keyQueue.front().empty()){
 						rowKeyString += to_string(keyQueue.front().front()) + " ";
 						keyQueue.front().pop();
+						rowKeyQueueEnum.front().pop();
 					}
 					cout << "\x1B[31m" <<  setw(margin) << rowKeyString + "   " << "\033[0m";
 				}
 				//
 				else{
 					while(!keyQueue.front().empty()){
-						rowKeyString += to_string(keyQueue.front().front()) + " ";
-						keyQueue.front().pop();
+						if(rowKeyQueueEnum.front().front() == keyQueue.front().front()){
+							rowKeyString +=  "\x1B[90m" + to_string(keyQueue.front().front()) + "\033[0m" + " ";
+							keyQueue.front().pop();
+							rowKeyQueueEnum.front().pop();
+							margin += 9;
+						}
+						else{
+							rowKeyString += to_string(keyQueue.front().front()) + " ";
+							keyQueue.front().pop();
+							rowKeyQueueEnum.front().pop();
+						}
 					};
 					cout << setw(margin) << rowKeyString + "   ";
 				}
 				keyQueue.pop();
+				rowKeyQueueEnum.pop();
+				margin = 20;
 		}
 
 		void Puzzle::PrintGameBoardRow(int selectedRow, int cursorX, int cursorY){
@@ -216,6 +230,61 @@ using namespace std;
 				queue<int> puzzleKeyQueue;
 				for(int j = 0; j < (int)size(puzzleMap[0]); j++){
 					if(puzzleMap[j][i]){
+						consecutiveCount++;
+					}
+					else{
+						if(consecutiveCount != 0){
+							puzzleKeyQueue.push(consecutiveCount);
+						}
+						consecutiveCount = 0;
+					}
+				}
+				if(consecutiveCount != 0){
+					puzzleKeyQueue.push(consecutiveCount);
+				}
+				if(puzzleKeyQueue.empty()){
+					puzzleKeyQueue.push(0);
+				}
+				columnKeyQueue.push_back(puzzleKeyQueue);
+			}
+			return columnKeyQueue;
+		}
+
+
+		queue<queue<int>> Puzzle::CalcRowKeysEnum(){
+			queue<queue<int>> rowKeyQueue;
+			for(int i = 0; i < (int)size(puzzleMap[0]); i++){
+				int consecutiveCount = 0;
+				queue<int> puzzleKeyQueue;
+				for(int j = 0; j < (int)size(puzzleMap[0]); j++){
+					if(enumGameBoard[i][j] == eMapEntryType::FILLED){
+						consecutiveCount++;
+					}
+					else{
+						if(consecutiveCount != 0){
+							puzzleKeyQueue.push(consecutiveCount);
+						}
+						consecutiveCount = 0;
+					}
+				}
+				if(consecutiveCount != 0){
+					puzzleKeyQueue.push(consecutiveCount);
+				}
+				if(puzzleKeyQueue.empty()){
+					puzzleKeyQueue.push(0);
+				}
+				rowKeyQueue.push(puzzleKeyQueue);
+			}
+			return rowKeyQueue;
+		}
+
+		vector<queue<int>> Puzzle::CalcColumnKeysEnum(){
+			vector<queue<int>> columnKeyQueue;
+			for(int i = 0; i < (int)size(enumGameBoard[0]); i++){
+				int consecutiveCount = 0;
+				queue<int> puzzleKeyQueue;
+				for(int j = 0; j < (int)size(enumGameBoard[0]); j++){
+					if(enumGameBoard[j][i] == eMapEntryType::FILLED){
 						consecutiveCount++;
 					}
 					else{
