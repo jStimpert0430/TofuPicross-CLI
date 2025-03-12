@@ -1,5 +1,6 @@
 #include <iostream>
 #include "picrossController.h"
+#include "picrossEnums.h"
 
 	std::string picrossController::GetCommand(Puzzle &currentPuzzle){
 		char input;
@@ -20,8 +21,9 @@
 				MoveCursor(1, 0, currentPuzzle.getSize());
                 return "   Moved Right";
 			case 'm':
+			//TODO: Poor construction of these checks, will change I just was working out how I wanted it to work logically. Instead of checking map puzzle val first, consider case checking the eMapEntry enum and reaction based off of that, since it is the current board state
 				if(currentPuzzle.GetPuzzleMapVal(cursorPos.first, cursorPos.second) == true){
-					if(currentPuzzle.GetGameBoardVal(cursorPos.first, cursorPos.second) != true){
+					if(currentPuzzle.GetGameBoardVal(cursorPos.first, cursorPos.second) != eMapEntryType::FILLED){
 						MarkPuzzle(cursorPos.first, cursorPos.second, currentPuzzle);
                     	return "Correct Guess - Marking Spot";
 					}
@@ -29,10 +31,14 @@
 						return "Can't mark a spot again";
 					}
 				}
-				else{
+				else if(currentPuzzle.GetGameBoardVal(cursorPos.first, cursorPos.second) == eMapEntryType::EMPTY){
 					currentPuzzle.addToCurrentMistakes(1);
+					MarkMiss(cursorPos.first, cursorPos.second, currentPuzzle);
                     return "Incorrect Guess -- Adding Miss";
 					// No match, so it must be a miss -- increment miss counter, check for limit and continue or end game depending.
+				}
+				else{
+					return "Can't mark a spot again";
 				}
 			default: 
 				return "Error: Not a supported command";
@@ -62,7 +68,11 @@
 	}
 
 	void picrossController::MarkPuzzle(int x, int y, Puzzle &currentPuzzle){
-		currentPuzzle.SetGameBoard(x, y, true);
+		currentPuzzle.SetGameBoard(x, y, eMapEntryType::FILLED);
+	}
+
+	void picrossController::MarkMiss(int x, int y, Puzzle &currentPuzzle){
+		currentPuzzle.SetGameBoard(x, y, eMapEntryType::MISSED);
 	}
 
 	bool picrossController::CheckMove(int x, int y, Puzzle &currentPuzzle){

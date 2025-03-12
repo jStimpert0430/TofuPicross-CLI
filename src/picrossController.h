@@ -14,6 +14,7 @@ class picrossController{
         void SetCursorPOS(int newX, int newY);
         void MoveCursor(int x, int y, int puzzleBounds);
         void MarkPuzzle(int x, int y, Puzzle &currentPuzzle);
+        void MarkMiss(int x, int y, Puzzle &currentPuzzle);
         bool CheckMove(int x, int y, Puzzle &currentPuzzle);
 };
 

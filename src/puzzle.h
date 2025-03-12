@@ -13,8 +13,8 @@ class Puzzle{
 		int MAX_MISTAKES = 10;
 		int currentMistakes = 0;
 		//DEBUG DEFINITION - IN FULL VERSION THIS WILL BE POPULATED EXTERNALLY
-		bool gameBoard[SIZE][SIZE] = {};
 
+		//A bool is used for the puzzle map and the custom enum for the gameboard because the map needs only 2 states whereas the gameboard will have many.
 		bool puzzleMap[SIZE][SIZE] = { 
 		{false, false, false, false, false, false, false, false, false , false},
 		{false, false, true, true, true, true, true, true, true, false},
@@ -31,8 +31,8 @@ class Puzzle{
 
 	public:
         Puzzle();
-		void SetGameBoard(int x, int y, bool val);
-		bool GetGameBoardVal(int x, int y);
+		void SetGameBoard(int x, int y, enum eMapEntryType val);
+		enum eMapEntryType GetGameBoardVal(int x, int y);
 		bool GetPuzzleMapVal(int x, int y);
 		void PrintHeader();
 		void PrintTopRowCoords();

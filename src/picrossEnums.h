@@ -6,7 +6,7 @@ enum class eMapEntryType{
     FILLED,
     FLAGGED,
     FLAGGEDFILLED,
-    WRONG,
+    MISSED,
     eMapEntryType_MAX
 };
 
