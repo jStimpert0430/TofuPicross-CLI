@@ -16,7 +16,7 @@ class Puzzle{
 
 		//A bool is used for the puzzle map and the custom enum for the gameboard because the map needs only 2 states whereas the gameboard will have many.
 		bool puzzleMap[SIZE][SIZE] = { 
-		{false, false, false, false, false, false, false, false, false , false},
+		{false, false, false, false, false, true, false, false, false , false},
 		{false, false, true, true, true, true, true, true, true, false},
 		{false, false, false, true, true, true, true, true, false, false},
 		{false, false, false, true, true, true, true, true, false, false},
@@ -24,7 +24,7 @@ class Puzzle{
 		{false, false, true, true, true, true, true, true, true, false},
 		{false, false, false, false, false, true, false, false, false , false},
 		{true, false, true, true, true, true, true, true, true, true},
-		{false, true, true, true, true, true, true, true, true , false},
+		{true, true, true, true, true, true, true, true, true , true},
 		{false, false, true, true, true, true, true, true, true, false} };
 
 		enum eMapEntryType enumGameBoard[SIZE][SIZE] = {};
@@ -39,7 +39,7 @@ class Puzzle{
 		void PrintBoard(int cursorX, int cursorY, std::string message);
 		void PrintLeadingKey(std::queue<std::queue<int>> &keyQueue, std::queue<std::queue<int>> &rowKeyQueueEnum, int selectedRow, int cursorY);
 		void PrintGameBoardRow(int selectedRow, int cursorX, int cursorY);
-		void PrintBottomKeys(std::vector<std::queue<int>> &keyQueue, int cursorX);
+		void PrintBottomKeys(std::vector<std::queue<int>> &keyQueue, std::vector<std::queue<int>> &columnKeyQueueEnum, int cursorX);
 		void PrintFooter(std::string message);
 		void addToCurrentMistakes(int value);
 		int getMaxMistakes();

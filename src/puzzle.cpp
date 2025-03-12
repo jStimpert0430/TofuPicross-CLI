@@ -41,7 +41,7 @@ using namespace std;
 				cout << grayNumber;
 				PrintGameBoardRow(i, cursorX, cursorY);
 			}
-			PrintBottomKeys(columnKeyQueue, cursorX);
+			PrintBottomKeys(columnKeyQueue, columnKeyQueueEnum, cursorX);
 			PrintFooter(message);
 		};
 
@@ -125,21 +125,37 @@ using namespace std;
 			}
 		}
 
-		void Puzzle::PrintBottomKeys(vector<queue<int>> &keyQueue, int cursorX){
+		void Puzzle::PrintBottomKeys(vector<queue<int>> &keyQueue, vector<queue<int>> &columnKeyQueueEnum, int cursorX){
 			int margin = 20;
 			cout << "\n";
 			for(int i = 0; i < 6; i++){
 				cout << "\n";
 				cout << setw(margin) << right << " ";
             	cout << "  ";
+				string spacer = "";
 				for(int j = 0; j < SIZE; j++){
 					//Print bottom key red if is the the same column the cursor is currently in
 					if(!keyQueue.at(j).empty()){
 						if(j == cursorX){
-							cout << " " << "\x1B[31m" << keyQueue.at(j).front() << "\033[0m";
+							if(keyQueue.at(j).front() > 9){
+								cout << "\x1B[31m" << keyQueue.at(j).front() << "\033[0m";
+							}
+							else{
+								cout << " " << "\x1B[31m" << keyQueue.at(j).front() << "\033[0m";
+							}
 						}
 						else{
-							cout << " " << keyQueue.at(j).front();
+							if(columnKeyQueueEnum.at(j).front() == keyQueue.at(j).front()){
+								cout << " " << "\x1B[90m" << keyQueue.at(j).front() << "\033[0m";
+							}
+							else{
+								if(keyQueue.at(j).front() > 9){
+									cout << keyQueue.at(j).front();
+								}
+								else{
+									cout << " " << keyQueue.at(j).front();
+								}
+							}
 						}
 					keyQueue.at(j).pop();
 					}
@@ -273,7 +289,7 @@ using namespace std;
 					}
 				}
 				if(puzzleConsecutiveCount != 0){
-						puzzleKeyQueue.push(consecutiveCount);
+					puzzleKeyQueue.push(consecutiveCount);
 				}
 				if(puzzleKeyQueue.empty()){
 					puzzleKeyQueue.push(0);
@@ -287,19 +303,25 @@ using namespace std;
 			vector<queue<int>> columnKeyQueue;
 			for(int i = 0; i < (int)size(enumGameBoard[0]); i++){
 				int consecutiveCount = 0;
+				int puzzleConsecutiveCount = 0;
 				queue<int> puzzleKeyQueue;
 				for(int j = 0; j < (int)size(enumGameBoard[0]); j++){
-					if(enumGameBoard[j][i] == eMapEntryType::FILLED){
-						consecutiveCount++;
+					if(puzzleMap[j][i]){
+						puzzleConsecutiveCount++;
+						if(enumGameBoard[j][i] == eMapEntryType::FILLED){
+							consecutiveCount++;
+						}
 					}
 					else{
-						if(consecutiveCount != 0){
+						if(puzzleConsecutiveCount != 0){
 							puzzleKeyQueue.push(consecutiveCount);
 						}
 						consecutiveCount = 0;
+						puzzleConsecutiveCount = 0;
 					}
 				}
-				if(consecutiveCount != 0){
+				
+				if(puzzleConsecutiveCount != 0){
 					puzzleKeyQueue.push(consecutiveCount);
 				}
 				if(puzzleKeyQueue.empty()){
